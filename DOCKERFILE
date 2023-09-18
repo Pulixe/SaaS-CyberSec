@@ -1,0 +1,7 @@
+FROM registry.redhat.io/ubi8:latest
+MAINTAINER FRANCISCO francisco.pulice@outlook.com
+ADD serversec.py /home/cybersec
+RUN yum install python38
+expose 80 
+CMD cd /home/cybersec
+CMD python3.8 serversec.py
