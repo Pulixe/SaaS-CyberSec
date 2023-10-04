@@ -3,22 +3,23 @@ import pyotp
 import smtplib
 # using flask_restful para servir el codigo de verificacion
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from flask_restful import reqparse,abort,Resource, Api
   
 # creating the flask app
 app = Flask(__name__)
 # creating an API object
 api = Api(app) 
-
+CORS(app)
 #se genera la llave base para generar los 6 digitos    
 key = pyotp.random_base32()
 totp = pyotp.TOTP(key,6,None,None,None, 60)
-
+seccode = ''
 # POST 1: clase que genera y envia el codigo por correo electronico
 class getCode(Resource):
     def post(self):
         seccode=totp.now()
-        print(seccode)
+        print("el codigo generado es: "+seccode)
         json_data = request.get_json(force=True)
         email = json_data['email']
         print(email)
@@ -45,8 +46,8 @@ Subject: %s
 
 #POST 2 : Clase que recibe el codigo enviado por el usuario y lo valida
 class verifyCode(Resource):
-    print(totp.now())
     def post(self):
+        #print("el codigo a verificar es: " + totp.now())
         #CODIGO PARA REVISAR EL CODIGO de 6 digitos
         json_data = request.get_json(force=True)
         codigo = json_data['codigo']
