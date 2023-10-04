@@ -1,7 +1,11 @@
 FROM registry.redhat.io/ubi8:latest
-MAINTAINER FRANCISCO francisco.pulice@outlook.com
-ADD serversec.py /home/cybersec
-RUN yum install python38
-expose 80 
-CMD cd /home/cybersec
-CMD python3.8 serversec.py
+RUN mkdir /home/cybersec
+WORKDIR /home/cybersec
+COPY ./serversec.py /home/cybersec
+RUN yum install -y python38
+RUN python3.8 -m pip install flask
+RUN python3.8 -m pip install Flask-RESTful
+RUN python3.8 -m pip install -U flask-cors
+RUN python3.8 -m pip install pyotp
+ENTRYPOINT python3.8 ./serversec.py
+EXPOSE 5000 
